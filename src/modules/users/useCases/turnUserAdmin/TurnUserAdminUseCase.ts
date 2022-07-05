@@ -1,3 +1,4 @@
+import { HttpError } from "../../../../utils/HttpError";
 import { User } from "../../model/User";
 import { IUsersRepository } from "../../repositories/IUsersRepository";
 
@@ -9,7 +10,15 @@ class TurnUserAdminUseCase {
   constructor(private usersRepository: IUsersRepository) {}
 
   execute({ user_id }: IRequest): User {
-    // Complete aqui
+    const user = this.usersRepository.findById(user_id);
+
+    if (!user) {
+      throw new HttpError(404, "User not exists");
+    }
+
+    Object.assign(user, { admin: true });
+
+    return user;
   }
 }
 
